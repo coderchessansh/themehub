@@ -1,12 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ThemeHub</title>
+<title>ThemeHub V1.1</title>
+<style>
+body{
+font-family:Arial;
+text-align:center;
+padding:30px;
+transition:.3s;
+}
+button{
+padding:10px 20px;
+margin:10px;
+}
+</style>
 </head>
 <body>
 
-<h1>🎨 ThemeHub</h1>
-<p>My first website hosted on GitHub Pages!</p>
+<h1>🎨 ThemeHub V1.1</h1>
+
+<p>Background Color</p>
+<input type="color" id="bg" value="#ffffff">
+
+<p>Text Color</p>
+<input type="color" id="text" value="#000000">
+
+<br><br>
+
+<button onclick="applyTheme()">Apply Theme</button>
+<button onclick="saveTheme()">Save Theme</button>
+
+<script>
+function applyTheme(){
+document.body.style.backgroundColor =
+document.getElementById("bg").value;
+
+document.body.style.color =
+document.getElementById("text").value;
+}
+
+function saveTheme(){
+localStorage.setItem(
+"bg",
+document.getElementById("bg").value
+);
+
+localStorage.setItem(
+"text",
+document.getElementById("text").value
+);
+
+alert("Theme Saved!");
+}
+
+window.onload = ()=>{
+let bg = localStorage.getItem("bg");
+let text = localStorage.getItem("text");
+
+if(bg){
+document.getElementById("bg").value = bg;
+document.getElementById("text").value = text;
+applyTheme();
+}
+}
+</script>
 
 </body>
 </html>
