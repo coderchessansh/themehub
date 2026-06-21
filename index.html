@@ -1,28 +1,60 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
-<title>ThemeHub V1.1</title>
+<title>ThemeHub V1.2</title>
+
 <style>
 body{
-font-family:Arial;
+font-family:Arial,sans-serif;
 text-align:center;
 padding:30px;
-transition:.3s;
+transition:0.3s;
 }
+
+.container{
+max-width:700px;
+margin:auto;
+}
+
 button{
 padding:10px 20px;
-margin:10px;
+margin:5px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+input[type="color"]{
+width:80px;
+height:50px;
+border:none;
+cursor:pointer;
+}
+
+.card{
+padding:20px;
+border:2px solid #ccc;
+border-radius:15px;
+margin-top:20px;
 }
 </style>
+
 </head>
 <body>
 
-<h1>🎨 ThemeHub V1.1</h1>
+<div class="container">
 
-<p>Background Color</p>
+<h1>🎨 ThemeHub V1.2</h1>
+
+<p>Create your own theme!</p>
+
+<div class="card">
+
+<h3>Background Color</h3>
 <input type="color" id="bg" value="#ffffff">
 
-<p>Text Color</p>
+<h3>Text Color</h3>
 <input type="color" id="text" value="#000000">
 
 <br><br>
@@ -30,16 +62,50 @@ margin:10px;
 <button onclick="applyTheme()">Apply Theme</button>
 <button onclick="saveTheme()">Save Theme</button>
 
+</div>
+
+<div class="card">
+
+<h2>Preset Themes</h2>
+
+<button onclick="discordTheme()">🟣 Discord</button>
+<button onclick="darkTheme()">🌑 Dark</button>
+<button onclick="lightTheme()">☀️ Light</button>
+<button onclick="matrixTheme()">🟢 Matrix</button>
+<button onclick="pinkTheme()">🌸 Pink</button>
+
+</div>
+
+<div class="card">
+
+<h2>Preview</h2>
+
+<p>This is preview text.</p>
+
+<button id="previewButton">
+Example Button
+</button>
+
+</div>
+
+</div>
+
 <script>
+
 function applyTheme(){
-document.body.style.backgroundColor =
+
+let bg =
 document.getElementById("bg").value;
 
-document.body.style.color =
+let text =
 document.getElementById("text").value;
+
+document.body.style.backgroundColor = bg;
+document.body.style.color = text;
 }
 
 function saveTheme(){
+
 localStorage.setItem(
 "bg",
 document.getElementById("bg").value
@@ -53,17 +119,57 @@ document.getElementById("text").value
 alert("Theme Saved!");
 }
 
-window.onload = ()=>{
-let bg = localStorage.getItem("bg");
-let text = localStorage.getItem("text");
-
-if(bg){
-document.getElementById("bg").value = bg;
-document.getElementById("text").value = text;
+function discordTheme(){
+document.getElementById("bg").value="#313338";
+document.getElementById("text").value="#ffffff";
 applyTheme();
 }
+
+function darkTheme(){
+document.getElementById("bg").value="#111111";
+document.getElementById("text").value="#ffffff";
+applyTheme();
 }
+
+function lightTheme(){
+document.getElementById("bg").value="#ffffff";
+document.getElementById("text").value="#000000";
+applyTheme();
+}
+
+function matrixTheme(){
+document.getElementById("bg").value="#000000";
+document.getElementById("text").value="#00ff00";
+applyTheme();
+}
+
+function pinkTheme(){
+document.getElementById("bg").value="#ffb6c1";
+document.getElementById("text").value="#4a004a";
+applyTheme();
+}
+
+window.onload = ()=>{
+
+let bg =
+localStorage.getItem("bg");
+
+let text =
+localStorage.getItem("text");
+
+if(bg){
+
+document.getElementById("bg").value = bg;
+document.getElementById("text").value = text;
+
+applyTheme();
+
+}
+
+};
+
 </script>
 
 </body>
 </html>
+```
