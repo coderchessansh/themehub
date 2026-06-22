@@ -104,6 +104,11 @@ Example Button
 
 </div>
 
+<div class="card">
+    <h2>📚 Saved Themes</h2>
+    <div id="themeList"></div>
+</div>
+
 </div>
 
 <script>
@@ -122,17 +127,24 @@ document.body.style.color = text;
 
 function saveTheme(){
 
-localStorage.setItem(
-"bg",
-document.getElementById("bg").value
-);
+let themes =
+JSON.parse(localStorage.getItem("themes") || "[]");
+
+themes.push({
+name: document.getElementById("themeName").value,
+bg: document.getElementById("bg").value,
+text: document.getElementById("text").value
+});
 
 localStorage.setItem(
-"text",
-document.getElementById("text").value
+"themes",
+JSON.stringify(themes)
 );
+
+renderThemes();
 
 alert("Theme Saved!");
+
 }
 
 function exportTheme(){
@@ -186,6 +198,46 @@ applyTheme();
 reader.readAsText(file);
 
   }
+
+function renderThemes(){
+
+let container =
+document.getElementById("themeList");
+
+container.innerHTML = "";
+
+let themes =
+JSON.parse(localStorage.getItem("themes") || "[]");
+
+themes.forEach((theme,index)=>{
+
+let button =
+document.createElement("button");
+
+button.innerText =
+theme.name || ("Theme " + (index+1));
+
+button.onclick = ()=>{
+
+document.getElementById("themeName").value =
+theme.name;
+
+document.getElementById("bg").value =
+theme.bg;
+
+document.getElementById("text").value =
+theme.text;
+
+applyTheme();
+
+};
+
+container.appendChild(button);
+
+});
+
+}
+
 function discordTheme(){
 document.getElementById("bg").value="#313338";
 document.getElementById("text").value="#ffffff";
@@ -230,7 +282,7 @@ document.getElementById("bg").value = bg;
 document.getElementById("text").value = text;
 
 applyTheme();
-
+renderThemes();
 }
 
 };
