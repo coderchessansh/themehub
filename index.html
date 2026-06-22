@@ -134,8 +134,23 @@ document.getElementById("text").value;
 
 document.body.style.backgroundColor = bg;
 document.body.style.color = text;
+
+  applyAccent();
 }
 
+function applyAccent(){
+
+let accent =
+document.getElementById("accent").value;
+
+document.querySelectorAll("button").forEach(button=>{
+
+button.style.backgroundColor = accent;
+button.style.color = "white";
+
+});
+
+}
 function saveTheme(){
 
 let themes =
@@ -314,6 +329,9 @@ applyTheme();
 }
 
 renderThemes();
+
+document.getElementById("accent")
+.addEventListener("input",applyAccent);
 
 };
 
