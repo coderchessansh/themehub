@@ -212,7 +212,24 @@ JSON.parse(localStorage.getItem("themes") || "[]");
 themes.forEach((theme,index)=>{
 
 let button =
+document.createElement("button")
+let deleteButton =
 document.createElement("button");
+
+deleteButton.innerText = "🗑️";
+
+deleteButton.onclick = ()=>{
+
+themes.splice(index,1);
+
+localStorage.setItem(
+"themes",
+JSON.stringify(themes)
+);
+
+renderThemes();
+
+};
 
 button.innerText =
 theme.name || ("Theme " + (index+1));
@@ -233,7 +250,7 @@ applyTheme();
 };
 
 container.appendChild(button);
-
+container.appendChild(deleteButton);
 });
 
 }
