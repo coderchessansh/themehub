@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ThemeHub V2.3</title>
+<title>ThemeHub V2.2</title>
 
 <style>
 body{
@@ -25,25 +25,6 @@ padding:20px;
 margin:15px;
 border-radius:20px;
 box-shadow:0 0 20px rgba(0,0,0,.3);
-}
-
-.theme-card{
-background:#334155;
-padding:15px;
-margin:10px;
-border-radius:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-}
-
-.theme-info{
-text-align:left;
-}
-
-.theme-actions button{
-margin:3px;
 }
 
 button{
@@ -75,7 +56,7 @@ margin-top:20px;
 
 <div class="container">
 
-<h1>🎨 ThemeHub V2.3</h1>
+<h1>🎨 ThemeHub V2.2</h1>
 
 <p>Create your own theme!</p>
 
@@ -231,30 +212,29 @@ JSON.parse(localStorage.getItem("themes") || "[]");
 themes.forEach((theme,index)=>{
 
 let button =
-let card =
-document.createElement("div");
-
-card.className = "theme-card";
-
-card.innerHTML = `
-<div class="theme-info">
-<b>${theme.name || ("Theme " + (index+1))}</b><br>
-BG: ${theme.bg}<br>
-TXT: ${theme.text}
-</div>
-`;
-
-let actions =
-document.createElement("div");
-
-actions.className = "theme-actions";
-
-let loadButton =
+document.createElement("button")
+let deleteButton =
 document.createElement("button");
 
-loadButton.innerText = "Load";
+deleteButton.innerText = "🗑️";
 
-loadButton.onclick = ()=>{
+deleteButton.onclick = ()=>{
+
+themes.splice(index,1);
+
+localStorage.setItem(
+"themes",
+JSON.stringify(themes)
+);
+
+renderThemes();
+
+};
+
+button.innerText =
+theme.name || ("Theme " + (index+1));
+
+button.onclick = ()=>{
 
 document.getElementById("themeName").value =
 theme.name;
@@ -269,12 +249,11 @@ applyTheme();
 
 };
 
-actions.appendChild(loadButton);
-actions.appendChild(deleteButton);
+container.appendChild(button);
+container.appendChild(deleteButton);
+});
 
-card.appendChild(actions);
-
-container.appendChild(card);
+}
 
 function discordTheme(){
 document.getElementById("bg").value="#313338";
