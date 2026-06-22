@@ -84,12 +84,10 @@ margin-top:20px;
 
 <br><br>
 
-<button onclick="applyTheme()">Apply Theme</button>
 <button onclick="saveTheme()">Save Theme</button>
 <button onclick="exportTheme()">Export Theme</button>
 <input type="file" id="importFile">
 <button onclick="importTheme()">Import Theme</button>
-<button onclick="applyAccent()">Test Accent</button>
 </div>
 
 <div class="card">
@@ -101,7 +99,6 @@ margin-top:20px;
 <button onclick="lightTheme()">☀️ Light</button>
 <button onclick="matrixTheme()">🟢 Matrix</button>
 <button onclick="pinkTheme()">🌸 Pink</button>
-<button onclick="applyAccent()">Test Accent</button>
 </div>
 
 <div class="card">
@@ -331,8 +328,14 @@ applyTheme();
 
 renderThemes();
 
+document.getElementById("bg")
+.addEventListener("input",applyTheme);
+
+document.getElementById("text")
+.addEventListener("input",applyTheme);
+
 document.getElementById("accent")
-.addEventListener("input",applyAccent);
+.addEventListener("input",applyTheme);
 
 };
 
