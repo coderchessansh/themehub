@@ -14,8 +14,10 @@ class MainActivity : Activity() {
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
-        webView.settings.allowFileAccess = true
-        webView.settings.allowContentAccess = true
+        // ThemeHub only loads its bundled local HTML, so broad file/content
+        // access is unnecessary and disabled to reduce the WebView attack surface.
+        webView.settings.allowFileAccess = false
+        webView.settings.allowContentAccess = false
         webView.loadUrl("file:///android_asset/index.html")
         setContentView(webView)
     }
