@@ -1,345 +1,38 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>ThemeHub V2.2</title>
-
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ThemeHub V2.3</title>
 <style>
-body{
-font-family:Arial,sans-serif;
-background:#0f172a;
-color:white;
-padding:20px;
-text-align:center;
-transition:.3s;
-}
-
-.container{
-max-width:900px;
-margin:auto;
-}
-
-.card{
-background:#1e293b;
-padding:20px;
-margin:15px;
-border-radius:20px;
-box-shadow:0 0 20px rgba(0,0,0,.3);
-}
-
-button{
-padding:12px 20px;
-margin:5px;
-border:none;
-border-radius:12px;
-cursor:pointer;
-font-weight:bold;
-  }
-
-input[type="color"]{
-width:80px;
-height:50px;
-border:none;
-cursor:pointer;
-}
-
-.color-preview{
-display:inline-block;
-width:20px;
-height:20px;
-border-radius:5px;
-margin-left:5px;
-border:1px solid white;
-}
-.card{
-padding:20px;
-border:2px solid #ccc;
-border-radius:15px;
-margin-top:20px;
-}
+:root{--accent:#5865f2}*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#0f172a;color:#fff;padding:20px;text-align:center;transition:.3s;min-height:100vh}.container{max-width:900px;margin:auto}h1{font-size:clamp(2rem,6vw,3rem)}.card{background:rgba(255,255,255,.08);padding:20px;margin:15px 0;border-radius:20px;border:1px solid rgba(255,255,255,.18);box-shadow:0 10px 30px rgba(0,0,0,.18)}button{padding:12px 20px;margin:5px;border:0;border-radius:12px;cursor:pointer;font-weight:bold;background:var(--accent);color:#fff;transition:.2s}button:hover{transform:translateY(-2px);filter:brightness(1.08)}input[type=color]{width:80px;height:50px;border:0;cursor:pointer;background:none}input[type=text],select{padding:12px;border-radius:10px;border:1px solid #aaa;max-width:100%;font-size:16px}select{min-width:220px}label{display:block;margin:12px;font-weight:bold}.preview{padding:25px;border-radius:16px;margin-top:10px;background:rgba(255,255,255,.08)}#themeList{display:flex;flex-wrap:wrap;justify-content:center;gap:5px}.small{opacity:.75;font-size:.9rem}
 </style>
-
 </head>
 <body>
-
 <div class="container">
-
-<h1>🎨 ThemeHub V2.2</h1>
-
-<p>Create your own theme!</p>
-
-<div class="card">
-
-<h3>Theme Name</h3>
-<input type="text" id="themeName" placeholder="My Awesome Theme">
-
-<h3>Background Color</h3>
-<input type="color" id="bg" value="#ffffff">
-
-<h3>Text Color</h3>
-<input type="color" id="text" value="#000000">
-
-<h3>Accent Color</h3>
-<input type="color" id="accent" value="#5865f2">
-
-<br><br>
-
-<button onclick="saveTheme()">Save Theme</button>
-<button onclick="exportTheme()">Export Theme</button>
-<input type="file" id="importFile">
-<button onclick="importTheme()">Import Theme</button>
+<h1>🎨 ThemeHub V2.3</h1><p>Create, save, export and share your own themes!</p>
+<div class="card"><h2>🛠️ Theme Builder</h2>
+<label>Theme Name<br><input type="text" id="themeName" placeholder="My Awesome Theme"></label>
+<label>Background Color<br><input type="color" id="bg" value="#0f172a"></label>
+<label>Text Color<br><input type="color" id="text" value="#ffffff"></label>
+<label>Accent Color<br><input type="color" id="accent" value="#5865f2"></label>
+<label>Font<br><select id="font"><option value="Arial, sans-serif">Arial</option><option value="Verdana, sans-serif">Verdana</option><option value="Tahoma, sans-serif">Tahoma</option><option value="Trebuchet MS, sans-serif">Trebuchet MS</option><option value="Georgia, serif">Georgia</option><option value="Times New Roman, serif">Times New Roman</option><option value="Courier New, monospace">Courier New</option><option value="Impact, sans-serif">Impact</option></select></label>
+<button onclick="saveTheme()">💾 Save Theme</button><button onclick="exportTheme()">📤 Export Theme</button><input type="file" id="importFile" accept=".json"><button onclick="importTheme()">📥 Import Theme</button></div>
+<div class="card"><h2>✨ Preset Themes</h2><button onclick="preset('#313338','#ffffff','#5865f2','Arial, sans-serif')">🟣 Discord</button><button onclick="preset('#111111','#ffffff','#6666ff','Verdana, sans-serif')">🌑 Dark</button><button onclick="preset('#ffffff','#000000','#5865f2','Arial, sans-serif')">☀️ Light</button><button onclick="preset('#000000','#00ff00','#00aa00','Courier New, monospace')">🟢 Matrix</button><button onclick="preset('#ffb6c1','#4a004a','#d63384','Georgia, serif')">🌸 Pink</button></div>
+<div class="card"><h2>👀 Live Preview</h2><div class="preview"><p>This is preview text using your selected font and colors.</p><button>Example Button</button></div></div>
+<div class="card"><h2>📚 Saved Themes</h2><div id="themeList"></div><p class="small">Themes are saved in your browser using local storage.</p></div>
 </div>
-
-<div class="card">
-
-<h2>Preset Themes</h2>
-
-<button onclick="discordTheme()">🟣 Discord</button>
-<button onclick="darkTheme()">🌑 Dark</button>
-<button onclick="lightTheme()">☀️ Light</button>
-<button onclick="matrixTheme()">🟢 Matrix</button>
-<button onclick="pinkTheme()">🌸 Pink</button>
-</div>
-
-<div class="card">
-
-<h2>Preview</h2>
-
-<p>This is preview text.</p>
-
-<button id="previewButton">
-Example Button
-</button>
-
-</div>
-
-<div class="card">
-    <h2>📚 Saved Themes</h2>
-    <div id="themeList"></div>
-</div>
-
-</div>
-
 <script>
-
-function applyTheme(){
-
-let bg =
-document.getElementById("bg").value;
-
-let text =
-document.getElementById("text").value;
-
-document.body.style.backgroundColor = bg;
-document.body.style.color = text;
-
-  applyAccent();
-}
-
-function applyAccent(){
-
-let accent =
-document.getElementById("accent").value;
-
-document.querySelectorAll("button").forEach(button=>{
-
-button.style.backgroundColor = accent;
-button.style.color = "white";
-
-});
-
-}
-function saveTheme(){
-
-let themes =
-JSON.parse(localStorage.getItem("themes") || "[]");
-
-themes.push({
-name: document.getElementById("themeName").value,
-bg: document.getElementById("bg").value,
-text: document.getElementById("text").value
-});
-
-localStorage.setItem(
-"themes",
-JSON.stringify(themes)
-);
-
-renderThemes();
-
-alert("Theme Saved!");
-
-}
-
-function exportTheme(){
-
-let theme={
-name:document.getElementById("themeName").value,
-bg:document.getElementById("bg").value,
-text:document.getElementById("text").value
-};
-
-let blob=new Blob(
-[JSON.stringify(theme,null,2)],
-{type:"application/json"}
-);
-
-let a=document.createElement("a");
-
-a.href=URL.createObjectURL(blob);
-a.download="theme.json";
-a.click();
-
-  }
-
-function importTheme(){
-
-let file=
-document.getElementById("importFile").files[0];
-
-if(!file) return;
-
-let reader=new FileReader();
-
-reader.onload=function(){
-
-let theme=
-JSON.parse(reader.result);
-
-document.getElementById("themeName").value=
-theme.name;
-
-document.getElementById("bg").value=
-theme.bg;
-
-document.getElementById("text").value=
-theme.text;
-
-applyTheme();
-
-};
-
-reader.readAsText(file);
-
-  }
-
-function renderThemes(){
-
-let container =
-document.getElementById("themeList");
-
-container.innerHTML = "";
-
-let themes =
-JSON.parse(localStorage.getItem("themes") || "[]");
-
-themes.forEach((theme,index)=>{
-
-let button =
-document.createElement("button")
-let deleteButton =
-document.createElement("button");
-
-deleteButton.innerText = "🗑️";
-
-deleteButton.onclick = ()=>{
-
-themes.splice(index,1);
-
-localStorage.setItem(
-"themes",
-JSON.stringify(themes)
-);
-
-renderThemes();
-
-};
-
-button.innerText =
-theme.name || ("Theme " + (index+1));
-
-button.onclick = ()=>{
-
-document.getElementById("themeName").value =
-theme.name;
-
-document.getElementById("bg").value =
-theme.bg;
-
-document.getElementById("text").value =
-theme.text;
-
-applyTheme();
-
-};
-
-container.appendChild(button);
-container.appendChild(deleteButton);
-});
-
-}
-
-function discordTheme(){
-document.getElementById("bg").value="#313338";
-document.getElementById("text").value="#ffffff";
-applyTheme();
-}
-
-function darkTheme(){
-document.getElementById("bg").value="#111111";
-document.getElementById("text").value="#ffffff";
-applyTheme();
-}
-
-function lightTheme(){
-document.getElementById("bg").value="#ffffff";
-document.getElementById("text").value="#000000";
-applyTheme();
-}
-
-function matrixTheme(){
-document.getElementById("bg").value="#000000";
-document.getElementById("text").value="#00ff00";
-applyTheme();
-}
-
-function pinkTheme(){
-document.getElementById("bg").value="#ffb6c1";
-document.getElementById("text").value="#4a004a";
-applyTheme();
-}
-
-window.onload = ()=>{
-
-let bg =
-localStorage.getItem("bg");
-
-let text =
-localStorage.getItem("text");
-
-if(bg){
-
-document.getElementById("bg").value = bg;
-document.getElementById("text").value = text;
-
-applyTheme();
-
-}
-
-renderThemes();
-
-document.getElementById("bg")
-.addEventListener("input",applyTheme);
-
-document.getElementById("text")
-.addEventListener("input",applyTheme);
-
-document.getElementById("accent")
-.addEventListener("input",applyTheme);
-
-};
-
+const $=id=>document.getElementById(id);
+function getTheme(){return{name:$("themeName").value,bg:$("bg").value,text:$("text").value,accent:$("accent").value,font:$("font").value}}
+function applyTheme(){document.body.style.backgroundColor=$("bg").value;document.body.style.color=$("text").value;document.body.style.fontFamily=$("font").value;document.documentElement.style.setProperty('--accent',$("accent").value);}
+function loadTheme(t){$("themeName").value=t.name||'';$("bg").value=t.bg||'#0f172a';$("text").value=t.text||'#fff';$("accent").value=t.accent||'#5865f2';$("font").value=t.font||'Arial, sans-serif';applyTheme()}
+function saveTheme(){let t=JSON.parse(localStorage.getItem('themes')||'[]');t.push(getTheme());localStorage.setItem('themes',JSON.stringify(t));renderThemes();alert('Theme Saved!')}
+function exportTheme(){let t=getTheme(),blob=new Blob([JSON.stringify(t,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(t.name||'theme')+'.json';a.click()}
+function importTheme(){let f=$("importFile").files[0];if(!f)return alert('Choose a theme JSON file first!');let r=new FileReader();r.onload=()=>{try{loadTheme(JSON.parse(r.result))}catch(e){alert('Invalid theme file!')}};r.readAsText(f)}
+function renderThemes(){let c=$("themeList"),t=JSON.parse(localStorage.getItem('themes')||'[]');c.innerHTML='';t.forEach((theme,i)=>{let b=document.createElement('button');b.textContent=theme.name||'Theme '+(i+1);b.onclick=()=>loadTheme(theme);let d=document.createElement('button');d.textContent='🗑️';d.onclick=()=>{t.splice(i,1);localStorage.setItem('themes',JSON.stringify(t));renderThemes()};c.append(b,d)})}
+function preset(bg,text,accent,font){loadTheme({bg,text,accent,font})}
+['bg','text','accent','font'].forEach(id=>$(id).addEventListener('input',applyTheme));
+window.onload=()=>{let s=localStorage.getItem('themehubCurrent');if(s)try{loadTheme(JSON.parse(s))}catch(e){}renderThemes();applyTheme()};
+window.addEventListener('beforeunload',()=>localStorage.setItem('themehubCurrent',JSON.stringify(getTheme())));
 </script>
-
-</body>
-</html>
+</body></html>
