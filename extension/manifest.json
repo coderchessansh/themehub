@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "ThemeHub",
+  "version": "1.0.0",
+  "description": "Apply your ThemeHub colors and fonts to websites.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "action": {
+    "default_title": "ThemeHub",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
