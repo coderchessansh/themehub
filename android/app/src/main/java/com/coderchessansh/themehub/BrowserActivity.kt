@@ -26,7 +26,14 @@ class BrowserActivity : Activity() {
 
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundColor(Color.rgb(15,23,42)) }
         val bar = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(8,8,8,8) }
-        val url = EditText(this).apply { hint = "https://example.com"; singleLine = true; setTextColor(Color.WHITE); setHintTextColor(Color.LTGRAY); setBackgroundColor(Color.rgb(35,45,65)); setPadding(14,10,14,10) }
+        val url = EditText(this).apply {
+            hint = "https://example.com"
+            setSingleLine(true)
+            setTextColor(Color.WHITE)
+            setHintTextColor(Color.LTGRAY)
+            setBackgroundColor(Color.rgb(35,45,65))
+            setPadding(14,10,14,10)
+        }
         val go = Button(this).apply { text = "GO" }
         val theme = Button(this).apply { text = "🎨"; contentDescription = "Apply Theme" }
         bar.addView(url, LinearLayout.LayoutParams(0, -2, 1f))
@@ -70,7 +77,7 @@ class BrowserActivity : Activity() {
                 const old = document.getElementById('__themehub_style');
                 if (old) old.remove();
                 const s = document.createElement('style'); s.id='__themehub_style';
-                s.textContent = `html,body{background:${'$'}{t.bg} !important;color:${'$'}{t.text} !important} body *{color:${'$'}{t.text} !important;border-color:${'$'}{t.accent}55 !important} a{color:${'$'}{t.accent} !important} button,[role=button],input,textarea,select{background-color:${'$'}{t.accent} !important;color:#fff !important;border-color:${'$'}{t.accent} !important} header,nav,aside,main,section,article,div{}`;
+                s.textContent = `html,body{background:${'$'}{t.bg} !important;color:${'$'}{t.text} !important} body *{color:${'$'}{t.text} !important;border-color:${'$'}{t.accent}55 !important} a{color:${'$'}{t.accent} !important} button,[role=button],input,textarea,select{background-color:${'$'}{t.accent} !important;color:#fff !important;border-color:${'$'}{t.accent} !important}`;
                 document.documentElement.appendChild(s);
               } catch(e) {}
             })();
