@@ -43,7 +43,7 @@ class MainActivity : Activity() {
 
         @JavascriptInterface
         fun saveTheme(themeJson: String) {
-            getPreferences(MODE_PRIVATE).edit().putString("currentTheme", themeJson).apply()
+            getSharedPreferences("themehub", MODE_PRIVATE).edit().putString("theme", themeJson).apply()
         }
 
         @JavascriptInterface
@@ -52,7 +52,7 @@ class MainActivity : Activity() {
         }
     }
 
-    @Deprecated("Android's activity result API can be modernized later")
+    @Deprecated("Use Activity Result APIs when modernizing this project")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != pickerRequest || resultCode != RESULT_OK) return
