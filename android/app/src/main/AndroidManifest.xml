@@ -6,6 +6,7 @@
         android:icon="@drawable/ic_themehub"
         android:roundIcon="@drawable/ic_themehub"
         android:usesCleartextTraffic="false">
+        <activity android:name=".BrowserActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
