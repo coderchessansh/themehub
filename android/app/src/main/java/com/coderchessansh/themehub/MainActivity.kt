@@ -8,14 +8,43 @@ import android.os.Bundle
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
-    private val pickerRequest = 1001
-    private val exportRequest = 1002
     private var pendingExportJson: String? = null
+
+    private val filePicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        try {
+            val json = contentResolver.openInputStream(uri)?.use { input ->
+                BufferedReader(InputStreamReader(input, Charsets.UTF_8)).use { it.readText() }
+            } ?: throw IllegalStateException("Could not open file")
+            val escaped = org.json.JSONObject.quote(json)
+            webView.evaluateJavascript("window.importThemeFromAndroid($escaped)", null)
+        } catch (_: Exception) {
+            Toast.makeText(this, "Could not import that theme file.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val fileSaver = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        val json = pendingExportJson
+        pendingExportJson = null
+        if (uri == null || json == null) return@registerForActivityResult
+        try {
+            contentResolver.openOutputStream(uri, "wt")?.use { output ->
+                output.write(json.toByteArray(Charsets.UTF_8))
+                output.flush()
+            } ?: throw IllegalStateException("Could not open output")
+            Toast.makeText(this, "Theme exported successfully!", Toast.LENGTH_SHORT).show()
+        } catch (_: Exception) {
+            Toast.makeText(this, "Could not export that theme file.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,32 +63,26 @@ class MainActivity : Activity() {
     private inner class ThemeHubBridge {
         @JavascriptInterface
         fun openThemeFilePicker() {
-            runOnUiThread {
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "application/json"
-                }
-                startActivityForResult(intent, pickerRequest)
-            }
+            runOnUiThread { filePicker.launch(arrayOf("application/json", "text/json", "text/plain")) }
         }
 
         @JavascriptInterface
         fun exportThemeFile(themeJson: String, fileName: String) {
-            pendingExportJson = themeJson
             runOnUiThread {
-                val safeName = fileName.ifBlank { "theme" }.replace(Regex("[^A-Za-z0-9._-]"), "_")
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "application/json"
-                    putExtra(Intent.EXTRA_TITLE, if (safeName.endsWith(".json")) safeName else "$safeName.json")
-                }
-                startActivityForResult(intent, exportRequest)
+                pendingExportJson = themeJson
+                val clean = fileName.trim()
+                    .ifBlank { "theme" }
+                    .replace(Regex("[^A-Za-z0-9._-]"), "_")
+                    .removeSuffix(".json")
+                fileSaver.launch("$clean.json")
             }
         }
 
         @JavascriptInterface
         fun saveTheme(themeJson: String) {
-            getSharedPreferences("themehub", MODE_PRIVATE).edit().putString("theme", themeJson).apply()
+            getSharedPreferences("themehub", MODE_PRIVATE).edit()
+                .putString("theme", themeJson)
+                .apply()
         }
 
         @JavascriptInterface
@@ -68,31 +91,9 @@ class MainActivity : Activity() {
         }
     }
 
-    @Deprecated("Use Activity Result APIs when modernizing this project")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != RESULT_OK || data?.data == null) return
-        val uri: Uri = data.data!!
-
-        if (requestCode == pickerRequest) {
-            try {
-                val input = contentResolver.openInputStream(uri) ?: return
-                val json = BufferedReader(InputStreamReader(input)).use { it.readText() }
-                val escaped = org.json.JSONObject.quote(json)
-                webView.evaluateJavascript("window.importThemeFromAndroid($escaped)", null)
-            } catch (_: Exception) {
-                webView.evaluateJavascript("alert('Could not read that theme file.')", null)
-            }
-        } else if (requestCode == exportRequest) {
-            try {
-                val json = pendingExportJson ?: return
-                contentResolver.openOutputStream(uri)?.use { it.write(json.toByteArray(Charsets.UTF_8)) }
-                webView.evaluateJavascript("alert('Theme exported!')", null)
-            } catch (_: Exception) {
-                webView.evaluateJavascript("alert('Could not export that theme file.')", null)
-            } finally {
-                pendingExportJson = null
-            }
-        }
+    override fun onDestroy() {
+        webView.removeJavascriptInterface("Android")
+        webView.destroy()
+        super.onDestroy()
     }
 }
