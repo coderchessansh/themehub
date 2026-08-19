@@ -16,10 +16,10 @@ struct ContentView: View {
                     GroupBox("Theme Builder") {
                         VStack(spacing: 12) {
                             TextField("Theme name", text: $theme.name).textFieldStyle(.roundedBorder)
-                            ColorPicker("Background", selection: hexBinding(keyPath: \Theme.background), supportsOpacity: false)
-                            ColorPicker("Text", selection: hexBinding(keyPath: \Theme.text), supportsOpacity: false)
-                            ColorPicker("Accent", selection: hexBinding(keyPath: \Theme.accent), supportsOpacity: false)
-                            Picker("Font", selection: $theme.font) { ForEach(fonts, id: \.self) { Text($0).tag($0) } }
+                            ColorPicker("Background", selection: hexBinding(keyPath: \\Theme.background), supportsOpacity: false)
+                            ColorPicker("Text", selection: hexBinding(keyPath: \\Theme.text), supportsOpacity: false)
+                            ColorPicker("Accent", selection: hexBinding(keyPath: \\Theme.accent), supportsOpacity: false)
+                            Picker("Font", selection: $theme.font) { ForEach(fonts, id: \\.self) { Text($0).tag($0) } }
                                 .pickerStyle(.menu)
                             HStack {
                                 Button("💾 Save") { save() }
@@ -33,9 +33,7 @@ struct ContentView: View {
 
                     GroupBox("Presets") {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-                            ForEach(Theme.presets) { preset in
-                                Button(preset.name) { theme = preset }
-                            }
+                            ForEach(Theme.presets) { preset in Button(preset.name) { theme = preset } }
                         }
                     }
 
@@ -53,9 +51,7 @@ struct ContentView: View {
 
                     if !saved.isEmpty {
                         GroupBox("Saved Themes") {
-                            ForEach(saved) { item in
-                                Button(item.name) { theme = item }
-                            }
+                            ForEach(saved) { item in Button(item.name) { theme = item } }
                         }
                     }
                 }.padding()
@@ -63,7 +59,9 @@ struct ContentView: View {
             .navigationTitle("🎨 ThemeHub")
             .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in importTheme(result) }
             .sheet(isPresented: $showBrowser) { BrowserView(theme: theme) }
-            .sheet(item: $shareURL) { url in ShareSheet(url: url) }
+            .sheet(isPresented: Binding(get: { shareURL != nil }, set: { if !$0 { shareURL = nil } })) {
+                if let url = shareURL { ShareSheet(url: url) }
+            }
             .onAppear { loadSaved() }
         }
     }
@@ -76,7 +74,8 @@ struct ContentView: View {
     private func exportTheme() {
         do {
             let data = try JSONEncoder().encode(theme)
-            let url = FileManager.default.temporaryDirectory.appendingPathComponent((theme.name.isEmpty ? "theme" : theme.name) + ".json")
+            let safeName = theme.name.isEmpty ? "theme" : theme.name.replacingOccurrences(of: "/", with: "_")
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent(safeName + ".json")
             try data.write(to: url, options: .atomic)
             shareURL = url
         } catch {}
