@@ -16,10 +16,10 @@ struct ContentView: View {
                     GroupBox("Theme Builder") {
                         VStack(spacing: 12) {
                             TextField("Theme name", text: $theme.name).textFieldStyle(.roundedBorder)
-                            ColorPicker("Background", selection: hexBinding(keyPath: \\Theme.background), supportsOpacity: false)
-                            ColorPicker("Text", selection: hexBinding(keyPath: \\Theme.text), supportsOpacity: false)
-                            ColorPicker("Accent", selection: hexBinding(keyPath: \\Theme.accent), supportsOpacity: false)
-                            Picker("Font", selection: $theme.font) { ForEach(fonts, id: \\.self) { Text($0).tag($0) } }
+                            ColorPicker("Background", selection: hexBinding(keyPath: \Theme.background), supportsOpacity: false)
+                            ColorPicker("Text", selection: hexBinding(keyPath: \Theme.text), supportsOpacity: false)
+                            ColorPicker("Accent", selection: hexBinding(keyPath: \Theme.accent), supportsOpacity: false)
+                            Picker("Font", selection: $theme.font) { ForEach(fonts, id: \.self) { Text($0).tag($0) } }
                                 .pickerStyle(.menu)
                             HStack {
                                 Button("💾 Save") { save() }
